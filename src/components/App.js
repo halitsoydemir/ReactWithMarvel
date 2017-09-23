@@ -18,6 +18,8 @@ class App extends Component {
       characters: null,
       selectedCharacter: null,
     };
+    //bu alttakı komutsuzda calısıyor gibi
+    this.CharacterSearch = this.CharacterSearch.bind(this);
   }
 
   componentDidMount = () => {
@@ -32,6 +34,14 @@ class App extends Component {
     });
   }
 
+  CharacterSearch(term) {
+    $.getJSON(`${API_URL}/characters?${auth}&limit=5&nameStartsWith=${term}`, result => {
+      const characters = result.data.results;
+      this.setState({ characters });
+      console.log({ characters });
+    });
+  }
+
   handleCharacterSelect = character => {
     console.log(character);
     this.setState({ selectedCharacter: character });
@@ -42,7 +52,10 @@ class App extends Component {
     if (!this.state.characters) return <h1>Loading...</h1>;
     return (
       <div className="container">
-        <SearchBar />
+        <SearchBar onSearchClick={this.CharacterSearch} />
+        <SearchBar onSearchClick={term => alert(term)} />
+        <SearchBar onSearchClick={term => console.log(term)} />
+
         <CharacterList
           characters={this.state.characters}
           onCharacterSelect={this.handleCharacterSelect}
